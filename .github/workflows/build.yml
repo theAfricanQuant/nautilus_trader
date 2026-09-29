@@ -63,7 +63,7 @@ jobs:
           egress-policy: >-
             ${{ env.AUDIT_PR == 'true' && 'audit'
             || vars.STEP_SECURITY_EGRESS_POLICY
-            || 'block' }}
+            || 'audit' }}
           allowed-endpoints: >-
             ${{ vars.COMMON_ALLOWED_ENDPOINTS }}
             ${{ vars.CI_ALLOWED_ENDPOINTS }}
@@ -115,11 +115,7 @@ jobs:
     name: script tests
     needs: plan
     # Match pre-commit so script tests validate its execution environment.
-    runs-on: >-
-      ${{ github.event_name == 'pull_request'
-      && needs.plan.outputs.untrusted_pr != 'false'
-      && 'ubuntu-22.04'
-      || fromJson('["self-hosted", "Linux", "X64", "build"]') }}
+    runs-on: ubuntu-22.04
     steps:
       # https://github.com/step-security/harden-runner
       - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
@@ -127,7 +123,7 @@ jobs:
           egress-policy: >-
             ${{ env.AUDIT_PR == 'true' && 'audit'
             || vars.STEP_SECURITY_EGRESS_POLICY
-            || 'block' }}
+            || 'audit' }}
           allowed-endpoints: >-
             ${{ vars.COMMON_ALLOWED_ENDPOINTS }}
             ${{ vars.CI_ALLOWED_ENDPOINTS }}
@@ -191,11 +187,7 @@ jobs:
       - plan
       - test-scripts
     # Untrusted PRs stay on GitHub-hosted runners
-    runs-on: >-
-      ${{ github.event_name == 'pull_request'
-      && needs.plan.outputs.untrusted_pr != 'false'
-      && 'ubuntu-22.04'
-      || fromJson('["self-hosted", "Linux", "X64", "build"]') }}
+    runs-on: ubuntu-22.04
     env:
       # Self-hosted keeps Rust artifacts outside the workspace
       CARGO_TARGET_DIR: >-
@@ -218,7 +210,7 @@ jobs:
           egress-policy: >-
             ${{ env.AUDIT_PR == 'true' && 'audit'
             || vars.STEP_SECURITY_EGRESS_POLICY
-            || 'block' }}
+            || 'audit' }}
           allowed-endpoints: >-
             ${{ vars.COMMON_ALLOWED_ENDPOINTS }}
             ${{ vars.CI_ALLOWED_ENDPOINTS }}
@@ -296,11 +288,7 @@ jobs:
           - "3.13"
           - "3.14"
     name: build - python ${{ matrix.python-version }} (ubuntu-22.04)
-    runs-on: >-
-      ${{ github.event_name == 'pull_request'
-      && needs.plan.outputs.untrusted_pr != 'false'
-      && 'ubuntu-22.04'
-      || fromJson('["self-hosted", "Linux", "X64", "build"]') }}
+    runs-on: ubuntu-22.04
     defaults:
       run:
         shell: bash
@@ -352,7 +340,7 @@ jobs:
           egress-policy: >-
             ${{ env.AUDIT_PR == 'true' && 'audit'
             || vars.STEP_SECURITY_EGRESS_POLICY
-            || 'block' }}
+            || 'audit' }}
           allowed-endpoints: >-
             ${{ vars.COMMON_ALLOWED_ENDPOINTS }}
             ${{ vars.CI_ALLOWED_ENDPOINTS }}
@@ -441,11 +429,7 @@ jobs:
        needs.plan.outputs.publish_r2 == 'true' ||
        github.ref == 'refs/heads/master')
     name: rust tests (ubuntu-22.04)
-    runs-on: >-
-      ${{ github.event_name == 'pull_request'
-      && needs.plan.outputs.untrusted_pr != 'false'
-      && 'ubuntu-22.04'
-      || fromJson('["self-hosted", "Linux", "X64", "build"]') }}
+    runs-on: ubuntu-22.04
     needs:
       - plan
       - pre-commit
@@ -497,7 +481,7 @@ jobs:
           egress-policy: >-
             ${{ env.AUDIT_PR == 'true' && 'audit'
             || vars.STEP_SECURITY_EGRESS_POLICY
-            || 'block' }}
+            || 'audit' }}
           allowed-endpoints: >-
             ${{ vars.COMMON_ALLOWED_ENDPOINTS }}
             ${{ vars.CI_ALLOWED_ENDPOINTS }}
@@ -588,7 +572,7 @@ jobs:
       # https://github.com/step-security/harden-runner
       - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
-          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'block' }}
+          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'audit' }}
           allowed-endpoints: >-
             ${{ vars.COMMON_ALLOWED_ENDPOINTS }}
             ${{ vars.CI_ALLOWED_ENDPOINTS }}
@@ -660,7 +644,7 @@ jobs:
       # https://github.com/step-security/harden-runner
       - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
-          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'block' }}
+          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'audit' }}
           allowed-endpoints: >-
             ${{ vars.COMMON_ALLOWED_ENDPOINTS }}
             ${{ vars.CI_ALLOWED_ENDPOINTS }}
@@ -788,7 +772,7 @@ jobs:
       # https://github.com/step-security/harden-runner
       - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
-          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'block' }}
+          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'audit' }}
           allowed-endpoints: >-
             ${{ vars.COMMON_ALLOWED_ENDPOINTS }}
             ${{ vars.SECURITY_AUDIT_ALLOWED_ENDPOINTS }}
@@ -894,7 +878,7 @@ jobs:
       # https://github.com/step-security/harden-runner
       - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
-          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'block' }}
+          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'audit' }}
           allowed-endpoints: >-
             ${{ vars.COMMON_ALLOWED_ENDPOINTS }}
             ${{ vars.CI_ALLOWED_ENDPOINTS }}
@@ -983,7 +967,7 @@ jobs:
       # https://github.com/step-security/harden-runner
       - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
-          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'block' }}
+          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'audit' }}
           allowed-endpoints: >-
             ${{ vars.COMMON_ALLOWED_ENDPOINTS }}
             ${{ vars.CI_ALLOWED_ENDPOINTS }}
@@ -1013,7 +997,7 @@ jobs:
       # https://github.com/step-security/harden-runner
       - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
-          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'block' }}
+          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'audit' }}
           allowed-endpoints: >-
             ${{ vars.COMMON_ALLOWED_ENDPOINTS }}
             ${{ vars.CI_ALLOWED_ENDPOINTS }}
@@ -1048,7 +1032,7 @@ jobs:
       # https://github.com/step-security/harden-runner
       - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
-          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'block' }}
+          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'audit' }}
           allowed-endpoints: >-
             ${{ vars.COMMON_ALLOWED_ENDPOINTS }}
             ${{ vars.CI_ALLOWED_ENDPOINTS }}
@@ -1082,7 +1066,7 @@ jobs:
 
   release-docs-features-preflight:
     name: release docs/features preflight
-    runs-on: [self-hosted, Linux, X64, self-hosted-linux-x86]
+    runs-on: ubuntu-22.04
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     permissions:
       contents: read
@@ -1092,7 +1076,7 @@ jobs:
       # https://github.com/step-security/harden-runner
       - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
-          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'block' }}
+          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'audit' }}
           allowed-endpoints: >-
             ${{ vars.COMMON_ALLOWED_ENDPOINTS }}
             ${{ vars.CI_ALLOWED_ENDPOINTS }}
@@ -1151,7 +1135,7 @@ jobs:
       # https://github.com/step-security/harden-runner
       - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
-          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'block' }}
+          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'audit' }}
           allowed-endpoints: >-
             ${{ vars.COMMON_ALLOWED_ENDPOINTS }}
             ${{ vars.CI_ALLOWED_ENDPOINTS }}
@@ -1236,7 +1220,7 @@ jobs:
       # https://github.com/step-security/harden-runner
       - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
-          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'block' }}
+          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'audit' }}
           allowed-endpoints: >-
             ${{ vars.COMMON_ALLOWED_ENDPOINTS }}
             ${{ vars.CI_ALLOWED_ENDPOINTS }}
@@ -1284,7 +1268,7 @@ jobs:
       # https://github.com/step-security/harden-runner
       - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
-          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'block' }}
+          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'audit' }}
           allowed-endpoints: >-
             ${{ vars.COMMON_ALLOWED_ENDPOINTS }}
             ${{ vars.CI_ALLOWED_ENDPOINTS }}
@@ -1333,7 +1317,7 @@ jobs:
       # https://github.com/step-security/harden-runner
       - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
-          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'block' }}
+          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'audit' }}
           allowed-endpoints: >-
             ${{ vars.COMMON_ALLOWED_ENDPOINTS }}
             ${{ vars.CI_ALLOWED_ENDPOINTS }}
@@ -1400,7 +1384,7 @@ jobs:
       # https://github.com/step-security/harden-runner
       - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
-          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'block' }}
+          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'audit' }}
           allowed-endpoints: >-
             ${{ vars.COMMON_ALLOWED_ENDPOINTS }}
             ${{ vars.CI_ALLOWED_ENDPOINTS }}
@@ -1493,7 +1477,7 @@ jobs:
       # https://github.com/step-security/harden-runner
       - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
-          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'block' }}
+          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'audit' }}
           allowed-endpoints: >-
             ${{ vars.COMMON_ALLOWED_ENDPOINTS }}
             ${{ vars.CI_ALLOWED_ENDPOINTS }}
@@ -1556,7 +1540,7 @@ jobs:
       # https://github.com/step-security/harden-runner
       - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
-          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'block' }}
+          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'audit' }}
           allowed-endpoints: >-
             ${{ vars.COMMON_ALLOWED_ENDPOINTS }}
             ${{ vars.CI_ALLOWED_ENDPOINTS }}
@@ -1648,7 +1632,7 @@ jobs:
       # https://github.com/step-security/harden-runner
       - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
-          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'block' }}
+          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'audit' }}
           allowed-endpoints: >-
             ${{ vars.COMMON_ALLOWED_ENDPOINTS }}
             ${{ vars.CI_ALLOWED_ENDPOINTS }}
@@ -1759,7 +1743,7 @@ jobs:
       # https://github.com/step-security/harden-runner
       - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
-          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'block' }}
+          egress-policy: ${{ vars.STEP_SECURITY_EGRESS_POLICY || 'audit' }}
           allowed-endpoints: >-
             ${{ vars.COMMON_ALLOWED_ENDPOINTS }}
             ${{ vars.CI_ALLOWED_ENDPOINTS }}

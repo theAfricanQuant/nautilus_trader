@@ -17,10 +17,13 @@ permissions:
 
 env:
   # Fork PRs lack repo/org vars, so audit instead of block.
+  # Fork default: 'audit' (was 'block') so jobs without repo vars can still
+  # reach package registries. Set the STEP_SECURITY_EGRESS_POLICY repo
+  # variable to restore 'block' enforcement with an endpoint allowlist.
   EGRESS_POLICY: >-
     ${{ github.event.pull_request.head.repo.fork && 'audit'
     || vars.STEP_SECURITY_EGRESS_POLICY
-    || 'block' }}
+    || 'audit' }}
 
 on:
   workflow_call:
